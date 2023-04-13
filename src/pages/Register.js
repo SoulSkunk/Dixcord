@@ -2,6 +2,9 @@ import styled from "styled-components";
 import { Link, useNavigate } from "react-router-dom";
 import background from "../images/background.png";
 import { useState } from "react";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { auth } from "../firebase.config";
+
 
 const Login = styled.div`
     display: flex;
@@ -85,9 +88,32 @@ export default function ({ setUser }) {
     const [email, setEmail] = useState("");
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const navigate = useNavigate();
 
-    function handleRegister() {}
-
+    function handleRegister(email, username, password) {
+        createUserWithEmailAndPassword(auth, email, password)
+          .then((userCredential) => {
+            // Signed in
+            const user = userCredential.user;
+            updateProfile(user, {
+                displayName: username,
+              }).then(
+                function () {
+                  // Profile updated successfully!
+                  setUser(username)
+                  navigate("/dashboard");
+                },
+                function (error) {
+                  // An error happened.
+                }
+              );
+          })
+          .catch((error) => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            console.error(errorCode, errorMessage);
+          });
+      }
     return (
         <Login>
             <Container>

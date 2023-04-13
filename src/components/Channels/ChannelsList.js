@@ -4,6 +4,9 @@ import { Link } from "react-router-dom";
 import { ReactComponent as TextChannelLogo } from "../../images/hash.svg";
 import { ReactComponent as VoiceChannelLogo } from "../../images/voice.svg";
 import { ReactComponent as CaretDown } from "../../images/caret-down.svg";
+import { collection, getDocs } from "firebase/firestore";
+import { useEffect, useState } from "react";
+import { db } from "../../firebase.config";
 
 const Channelcategories = styled.ul`
     align-items: center;
@@ -82,7 +85,17 @@ const ChannelName = styled.li`
         height: 20px;
     }
 `;
-export default function ChannelsList({ setChannelId, setChannelName }) {
+export default function ChannelsList({ serverId,setChannelId, setChannelName }) {
+    const [channels, setChannels] = useState([]);
+    useEffect(() => {
+        getDocs(collection(db, "servers", serverId, "channels")).then((querySnapshot) => {
+            const newData = querySnapshot.docs.map((doc) => ({
+                ...doc.data(),
+                id: doc.id,
+            }));
+            setChannels(newData);
+        });
+    }, []);
     return (
         <AllChannels>
             <Channelcategories>
@@ -91,7 +104,7 @@ export default function ChannelsList({ setChannelId, setChannelName }) {
                     <h3>Text channels</h3>
                 </ChannelGroup>
 
-                {livechannel
+                {channels
                     .filter((livechannel) => livechannel.type === "text")
                     .map((livechannel) => (
                         <Link

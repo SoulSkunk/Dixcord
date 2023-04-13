@@ -21,7 +21,7 @@ export default function App() {
                         index
                         element={<Login setUsername={setUsername} />}
                     />
-                    <Route path="register" element={<Register />} />
+                    <Route path="register" element={<Register setUser={setUsername}/>} />
                     <Route
                         path="dashboard/*"
                         element={

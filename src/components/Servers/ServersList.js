@@ -46,7 +46,7 @@ export default function ({ setServerId, setServerName }) {
                 <Link key={server.id} to={server.name}>
                     <ServerListItem
                         onClick={() => {
-                            setServerId(server.name);
+                            setServerId(server.id);
                             setServerName(server.name);
                         }}
                     >

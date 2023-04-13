@@ -4,7 +4,9 @@ import ChannelsList from "./ChannelsList";
 import { UserContainer } from "../Users/UserContainer";
 import { ReactComponent as PlusLogo } from "../../images/plus.svg";
 import { addChannel } from "../../api/api";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { auth } from "../../firebase.config";
+import { signOut } from "@firebase/auth";
 
 const Sidebar = styled.aside`
     display: flex;
@@ -81,11 +83,21 @@ const BottomButton = styled.button`
 `;
 
 export default function ({
+    serverId,
     serverName,
     username,
     setChannelId,
     setChannelName,
 }) {
+    const navigate = useNavigate();
+    function handleLogout(){
+        signOut(auth).then(() => {
+            // Sign-out successful.
+            navigate("/")
+          }).catch((error) => {
+            // An error happened.
+          });
+    }
     return (
         <Sidebar>
             <nav>
@@ -94,14 +106,14 @@ export default function ({
                     <PlusLogo />
                 </Header>
                 <ChannelsList
+                    serverId={serverId}
                     setChannelId={setChannelId}
                     setChannelName={setChannelName}
                 />
             </nav>
             <BottomSection>
                 <UserContainer>{username}</UserContainer>
-                <Link to="/">
-                    <BottomButton>
+                    <BottomButton onClick={handleLogout}>
                         <svg
                             aria-hidden="true"
                             role="img"
@@ -115,7 +127,6 @@ export default function ({
                             ></path>
                         </svg>
                     </BottomButton>
-                </Link>
             </BottomSection>
         </Sidebar>
     );
