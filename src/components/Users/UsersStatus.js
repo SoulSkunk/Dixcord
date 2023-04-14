@@ -1,1 +1,1 @@
-export default () => <div style={{ background: "yellow" }}>UsersStatus.js</div>;
+export default () => <div style={{ background: "red" }}>UsersStatus.js</div>;
