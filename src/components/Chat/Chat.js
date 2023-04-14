@@ -36,7 +36,7 @@ const MessagesWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  max-height: 100%;
+  max-height: 80vh;
   overflow-y: scroll;
 `;
 const InputContainer = styled.div`
