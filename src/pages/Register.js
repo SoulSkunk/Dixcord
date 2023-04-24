@@ -4,17 +4,17 @@ import background from "../images/background.png";
 import { useState } from "react";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth } from "../firebase.config";
-
+import PasswordStrengthBar from "react-password-strength-bar";
 
 const Login = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    width: 100vw;
-    overflow: hidden;
-    background-image: url(${background});
-    background-size: contain;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  background-image: url(${background});
+  background-size: contain;
 `;
 
 const Container = styled.div`
@@ -85,79 +85,83 @@ const Container = styled.div`
 `;
 
 export default function ({ setUser }) {
-    const [email, setEmail] = useState("");
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
-    const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
-    function handleRegister(email, username, password) {
-        createUserWithEmailAndPassword(auth, email, password)
-          .then((userCredential) => {
-            // Signed in
-            const user = userCredential.user;
-            updateProfile(user, {
-                displayName: username,
-              }).then(
-                function () {
-                  // Profile updated successfully!
-                  setUser(username)
-                  navigate("/dashboard");
-                },
-                function (error) {
-                  // An error happened.
-                }
-              );
-          })
-          .catch((error) => {
-            const errorCode = error.code;
-            const errorMessage = error.message;
-            console.error(errorCode, errorMessage);
-          });
-      }
-    return (
-        <Login>
-            <Container>
-                <div>
-                    <h1>Créer un compte</h1>
-                </div>
-                <form
-                    onSubmit={(e) => {
-                        e.preventDefault();
-                        handleRegister(email, username, password);
-                    }}
-                >
-                    <label htmlFor="email" aria-required>
-                        E-mail
-                    </label>
-                    <input
-                        type="email"
-                        id="email"
-                        required
-                        onChange={(e) => setEmail(e.target.value)}
-                    ></input>
-                    <label htmlFor="username" aria-required>
-                        Nom d'utilisateur
-                    </label>
-                    <input
-                        type="text"
-                        id="username"
-                        required
-                        onChange={(e) => setUsername(e.target.value)}
-                    ></input>
-                    <label htmlFor="password" aria-required>
-                        Mot de passe
-                    </label>
-                    <input
-                        type="password"
-                        id="password"
-                        required
-                        onChange={(e) => setPassword(e.target.value)}
-                    ></input>
-
-                    <button type="submit">S'enregistrer</button>
-                </form>
-                <Link to="/">Déjà un compte ? Se connecter</Link>
-            </Container>
-        </Login>
-    );
+  function handleRegister(email, username, password) {
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        // Signed in
+        const user = userCredential.user;
+        updateProfile(user, {
+          displayName: username,
+        }).then(
+          function () {
+            // Profile updated successfully!
+            setUser(username);
+            navigate("/dashboard");
+          },
+          function (error) {
+            // An error happened.
+          }
+        );
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.error(errorCode, errorMessage);
+      });
+  }
+  return (
+    <Login>
+      <Container>
+        <div>
+          <h1>Créer un compte</h1>
+        </div>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleRegister(email, username, password);
+          }}
+        >
+          <label htmlFor="email" aria-required>
+            E-mail
+          </label>
+          <input
+            type="email"
+            id="email"
+            required
+            onChange={(e) => setEmail(e.target.value)}
+          ></input>
+          <label htmlFor="username" aria-required>
+            Nom d'utilisateur
+          </label>
+          <input
+            type="text"
+            id="username"
+            required
+            onChange={(e) => setUsername(e.target.value)}
+          ></input>
+          <label htmlFor="password" aria-required>
+            Mot de passe
+          </label>
+          <input
+            type="password"
+            id="password"
+            required
+            onChange={(e) => setPassword(e.target.value)}
+          ></input>
+          <PasswordStrengthBar
+            password={password}
+            scoreWords={["faible", "faible", "passable", "fort", "très fort"]}
+            shortScoreWord={"trop court"}
+          />
+          <button type="submit">S'enregistrer</button>
+        </form>
+        <Link to="/">Déjà un compte ? Se connecter</Link>
+      </Container>
+    </Login>
+  );
 }
